@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Player;
+use App\Http\Requests\PlayerRequest;
 use App\Http\Resources\PlayerResource;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,7 @@ class Players extends Controller
      */
     public function index()
     {
-        return Player::all();
+        return PlayerResource::collection(Player::all());
     }
 
     /**
@@ -23,7 +24,7 @@ class Players extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PlayerRequest $request)
     {
         $data = $request->only("player_name", "skill", "address");
         $player = Player::create($data);
@@ -42,6 +43,13 @@ class Players extends Controller
         return new PlayerResource($player);
     }
 
+    public function teams()
+    {
+       $ordered = Player::orderBy("skill", "DESC")->get();
+                return PlayerResource::collection($ordered);
+
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -49,7 +57,7 @@ class Players extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Player $player)
+    public function update(PlayerRequest $request, Player $player)
     {
         $data = $request->only("player_name", "skill", "address");
         $player->fill($data)->save();
