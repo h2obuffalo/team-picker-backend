@@ -6,6 +6,7 @@ $router->group(["prefix" => "players"], function ($router) {
     //using the url /api/players
     $router->get("","Players@index");
     $router->post("","Players@store");
+    $router->post("storeteam", "Players@storeteam");
     $router->get("teamup","Players@teams");
     $router->get("teamskill", "Players@teamskill");
 
