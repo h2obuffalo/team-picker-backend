@@ -24,6 +24,18 @@ class Players extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    public function storeteam(Request $request)
+    {
+        $players = $request->json()->all();
+
+            foreach ($players['players'] as $player) {
+                // $data = $player->only("player_name", "skill", "address");
+                $newPlayer = Player::create($player);
+                $newPlayer->fill($player)->save();
+            }
+            return "hello";
+    }
+
     public function store(PlayerRequest $request)
     {
         $data = $request->only("player_name", "skill", "address");
