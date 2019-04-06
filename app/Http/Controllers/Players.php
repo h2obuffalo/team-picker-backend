@@ -43,11 +43,32 @@ class Players extends Controller
         return new PlayerResource($player);
     }
 
+
+    //Fucntion for returning the players split into two teams
+
     public function teams()
     {
        $ordered = Player::orderBy("skill", "DESC")->get();
-                return PlayerResource::collection($ordered);
+      $orderedC = PlayerResource::collection($ordered);
+        $mixed = $orderedC->shuffle()->all();
+        return $mixed;
+    }
 
+      public function teamskill()
+    {
+      // get all the players and sort them by skill
+      $players = Player::orderBy('skill', "DESC")->get();
+
+      // assign a 1 to the team key for all even indexed players and a 2 to all odd indexed players
+      foreach($players as $key => $item){
+        if ($key % 2 === 0) {
+          $item->team = 1;
+          $item->fill(["team"])->save();
+        } else {
+          $item->team = 2;
+          $item->fill(["team"])->save();        }
+      };
+      return PlayerResource::collection($players);
     }
 
     /**
@@ -57,7 +78,7 @@ class Players extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(PlayerRequest $request, Player $player)
+      public function update(PlayerRequest $request, Player $player)
     {
         $data = $request->only("player_name", "skill", "address");
         $player->fill($data)->save();

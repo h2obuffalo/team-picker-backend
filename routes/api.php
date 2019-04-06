@@ -7,6 +7,7 @@ $router->group(["prefix" => "players"], function ($router) {
     $router->get("","Players@index");
     $router->post("","Players@store");
     $router->get("teamup","Players@teams");
+    $router->get("teamskill", "Players@teamskill");
 
     //for requests that need an ID to perform changes on specific player.
     $router->get("{player}", "Players@show");
