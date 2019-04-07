@@ -9,11 +9,13 @@ $router->group(["prefix" => "players"], function ($router) {
     $router->post("storeteam", "Players@storeteam");
     $router->get("teamup","Players@teams");
     $router->get("teamskill", "Players@teamskill");
+    $router->delete("dropplayers", "Players@dropplayers");
 
     //for requests that need an ID to perform changes on specific player.
     $router->get("{player}", "Players@show");
     $router->put("{player}", "Players@update");
     $router->delete("{player}", "Players@destroy");
+
 
 });
 
