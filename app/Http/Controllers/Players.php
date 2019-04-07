@@ -24,16 +24,17 @@ class Players extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
+    //function to take whole array of player objects and store each player in the database
     public function storeteam(Request $request)
     {
         $players = $request->json()->all();
 
-            foreach ($players['players'] as $player) {
-                // $data = $player->only("player_name", "skill", "address");
-                $newPlayer = Player::create($player);
-                $newPlayer->fill($player)->save();
-            }
-            return "hello";
+        foreach ($players['players'] as $player) {
+            $newPlayer = Player::create($player);
+            $newPlayer->fill($player)->save();
+        }
+        return PlayerResource::collection(Player::all());
     }
 
     public function store(PlayerRequest $request)
@@ -56,32 +57,35 @@ class Players extends Controller
     }
 
 
-    //Fucntion for returning the players split into two teams
+    //Fucntion for returning the players split into two random teams
 
     public function teams()
     {
-       $ordered = Player::orderBy("skill", "DESC")->get();
-      $orderedC = PlayerResource::collection($ordered);
-        $mixed = $orderedC->shuffle()->all();
-        return $mixed;
-    }
+        $players = Player::orderBy('skill', "DESC")->get();
 
-      public function teamskill()
-    {
-      // get all the players and sort them by skill
-      $players = Player::orderBy('skill', "DESC")->get();
-
-      // assign a 1 to the team key for all even indexed players and a 2 to all odd indexed players
-      foreach($players as $key => $item){
-        if ($key % 2 === 0) {
-          $item->team = 1;
-          $item->fill(["team"])->save();
-        } else {
-          $item->team = 2;
-          $item->fill(["team"])->save();        }
-      };
+        foreach($players as $key => $player){
+          $team = random_int(1, 2);
+          $player->team = $team;
+          $player->fill(['team'])->save();
+      }
       return PlayerResource::collection($players);
-    }
+  }
+
+  public function teamskill()
+  {
+      $players = Player::orderBy('skill', "DESC")->get();
+      // dd($players);
+      foreach($players as $key => $player){
+        if ($key % 2 === 0) {
+          $player->team = 1;
+          $player->fill(['team'])->save();
+      } else {
+          $player->team = 2;
+          $player->fill(['team'])->save();
+      }
+  };
+  return PlayerResource::collection($players);
+}
 
     /**
      * Update the specified resource in storage.
@@ -90,7 +94,7 @@ class Players extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-      public function update(PlayerRequest $request, Player $player)
+    public function update(PlayerRequest $request, Player $player)
     {
         $data = $request->only("player_name", "skill", "address");
         $player->fill($data)->save();
@@ -105,8 +109,13 @@ class Players extends Controller
      */
     public function destroy(Player $player)
     {
-
         $player->delete();
+        return response(null, 204);
+    }
+
+    public function dropplayers()
+    {
+        Player::truncate();
         return response(null, 204);
     }
 }
