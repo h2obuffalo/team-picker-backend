@@ -26,15 +26,15 @@ class Players extends Controller
      */
 
     //function to take whole array of player objects and store each player in the database
-    public function storeteam(Request $request)
+     public function storeteam(Request $request)
     {
-        $players = $request->json()->all();
+        $request = $request->json()->all();
 
-        foreach ($players['players'] as $player) {
-            $newPlayer = Player::create($player);
-            $newPlayer->fill($player)->save();
-        }
-        return PlayerResource::collection(Player::all());
+            foreach ($request['players'] as $player) {
+                $newPlayer = Player::create($player);
+                $newPlayer->fill($player)->save();
+            }
+            return PlayerResource::collection(Player::all());
     }
 
     public function store(PlayerRequest $request)
