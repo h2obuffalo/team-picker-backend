@@ -34,7 +34,7 @@ class Players extends Controller
                 $newPlayer = Player::create($player);
                 $newPlayer->fill($player)->save();
             }
-            return PlayerResource::collection(Player::all());
+            return Players::teamskill();
     }
 
     public function store(PlayerRequest $request)
