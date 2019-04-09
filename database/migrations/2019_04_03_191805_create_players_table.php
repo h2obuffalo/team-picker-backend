@@ -18,7 +18,8 @@ class CreatePlayersTable extends Migration
             $table->timestamps();
             $table->string('player_name', 30);
             $table->Integer('skill');
-            $table->string("address", 200);
+            $table->string("address", 200)->nullable();
+            $table->integer('team')->nullable();
         });
     }
 

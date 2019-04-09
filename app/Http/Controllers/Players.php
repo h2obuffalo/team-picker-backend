@@ -31,8 +31,11 @@ class Players extends Controller
         $request = $request->json()->all();
 
             foreach ($request['players'] as $player) {
+
                 $newPlayer = Player::create($player);
+
                 $newPlayer->fill($player)->save();
+                // dd($newPlayer);
             }
             return Players::teamskill();
     }
